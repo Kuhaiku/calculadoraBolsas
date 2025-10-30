@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="light">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Calculadora de Custos</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        
+                        "background-light": "#F9F9F9",
+                        "background-dark": "#101922",
+                        
+                        "card-light": "#FFFFFF",
+                        "card-dark": "#192734",
+                        
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1a2530",
+
+                        "text-light": "#111418",
+                        "text-dark": "#F6F7F8",
+                        "text-light-primary": "#111418",
+                        "text-dark-primary": "#f0f2f4",
+                        
+                        "text-secondary-light": "#617589",
+                        "text-secondary-dark": "#9DAAB6",
+                        "text-light-secondary": "#617589",
+                        "text-dark-secondary": "#a0b3c6",
+
+                        "border-light": "#dbe0e6",
+                        "border-dark": "#34404C",
+                        "border-dark-nav": "#344455",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled,
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            min-height: max(884px, 100dvh);
+        }
+        /* Classe helper para esconder abas */
+        .tab-panel.hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="light">
+    <div class="relative flex min-h-screen w-full flex-col bg-background-light dark:bg-background-dark font-display text-text-light dark:text-text-dark">
+        
+        <header class="sticky top-0 z-10 flex h-16 items-center border-b border-border-light/80 bg-background-light/80 dark:border-border-dark/80 dark:bg-background-dark/80 px-4 backdrop-blur-sm">
+            <h1 id="header-title" class="flex-1 text-center text-lg font-bold leading-tight tracking-[-0.015em] text-text-light dark:text-text-dark">
+                Custos de Insumos
+            </h1>
+        </header>
+
+        <main class="flex-1 pb-28">
+            
+            <div id="tab-insumos" class="tab-panel px-4 py-6">
+                <div class="flex flex-col gap-6">
+                    <div class="rounded-xl bg-card-light dark:bg-card-dark p-5 shadow-[0_4px_12px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
+                        <h2 class="text-text-light dark:text-text-dark text-[22px] font-bold leading-tight tracking-[-0.015em] mb-4">Alça</h2>
+                        <div class="flex flex-col gap-4">
+                            <label class="flex flex-col">
+                                <p class="text-base font-medium leading-normal pb-2 text-text-light dark:text-text-dark">Preço por Metro (R$)</p>
+                                <input id="precoAlca" class="form-input h-14 w-full ... " inputmode="decimal" placeholder="0,00" type="number" value="2" oninput="calcularTudo()">
+                            </label>
+                            <label class="flex flex-col">
+                                <p class="text-base font-medium leading-normal pb-2 text-text-light dark:text-text-dark">Cm por Bolsa (cm)</p>
+                                <input id="cmAlca" class="form-input h-14 w-full ... " inputmode="numeric" placeholder="0" type="number" value="120" oninput="calcularTudo()">
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="rounded-xl bg-card-light dark:bg-card-dark p-5 shadow-[0_4px_12px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
+                        <h2 class="text-text-light dark:text-text-dark text-[22px] font-bold leading-tight tracking-[-0.015em] mb-4">TNT</h2>
+                        <div class="flex flex-col gap-4">
+                            <label class="flex flex-col">
+                                <p class="text-base font-medium leading-normal pb-2 text-text-light dark:text-text-dark">Preço por Metro (R$)</p>
+                                <input id="precoTNT" class="form-input h-14 w-full ... " inputmode="decimal" placeholder="0,00" type="number" value="5" oninput="calcularTudo()">
+                            </label>
+                            <label class="flex flex-col">
+                                <p class="text-base font-medium leading-normal pb-2 text-text-light dark:text-text-dark">Largura do Tecido (cm)</p>
+                                <input id="larguraTNT" class="form-input h-14 w-full ... " inputmode="numeric" placeholder="0" type="number" value="140" oninput="calcularTudo()">
+                            </label>
+                            <div class="grid grid-cols-2 gap-4">
+                                <label class="flex flex-col">
+                                    <p class="text-base font-medium leading-normal pb-2 text-text-light dark:text-text-dark">Altura da Peça (cm)</p>
+                                    <input id="alturaPecaTNT" class="form-input h-14 w-full ... " inputmode="numeric" placeholder="0" type="number" value="90" oninput="calcularTudo()">
+                                </label>
+                                <label class="flex flex-col">
+                                    <p class="text-base font-medium leading-normal pb-2 text-text-light dark:text-text-dark">Largura da Peça (cm)</p>
+                                    <input id="larguraPecaTNT" class="form-input h-14 w-full ... " inputmode="numeric" placeholder="0" type="number" value="45" oninput="calcularTudo()">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="rounded-xl bg-card-light dark:bg-card-dark p-5 shadow-[0_4px_12px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
+                        <h2 class="text-text-light dark:text-text-dark text-[22px] font-bold leading-tight tracking-[-0.015em] mb-4">Algodão</h2>
+                        <div class="flex flex-col gap-4">
+                            <label class="flex flex-col">
+                                <p class="text-base font-medium leading-normal pb-2 text-text-light dark:text-text-dark">Preço por Metro (R$)</p>
+                                <input id="precoAlgodao" class="form-input h-14 w-full ... " inputmode="decimal" placeholder="0,00" type="number" value="17" oninput="calcularTudo()">
+                            </label>
+                            <label class="flex flex-col">
+                                <p class="text-base font-medium leading-normal pb-2 text-text-light dark:text-text-dark">Largura do Tecido (cm)</p>
+                                <input id="larguraAlgodao" class="form-input h-14 w-full ... " inputmode="numeric" placeholder="0" type="number" value="180" oninput="calcularTudo()">
+                            </label>
+                            <div class="grid grid-cols-2 gap-4">
+                                <label class="flex flex-col">
+                                    <p class="text-base font-medium leading-normal pb-2 text-text-light dark:text-text-dark">Altura da Peça (cm)</p>
+                                    <input id="alturaPecaAlgodao" class="form-input h-14 w-full ... " inputmode="numeric" placeholder="0" type="number" value="90" oninput="calcularTudo()">
+                                </label>
+                                <label class="flex flex-col">
+                                    <p class="text-base font-medium leading-normal pb-2 text-text-light dark:text-text-dark">Largura da Peça (cm)</p>
+                                    <input id="larguraPecaAlgodao" class="form-input h-14 w-full ... " inputmode="numeric" placeholder="0" type="number" value="45" oninput="calcularTudo()">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-custos" class="tab-panel hidden p-4 space-y-6">
+                <div class="p-4 @container">
+                    <div class="flex flex-col items-center justify-center rounded-xl bg-primary shadow-lg p-6 text-center">
+                        <p class="text-white/80 text-base font-medium leading-normal">Custo Total por Bolsa</p>
+                        <p id="outCustoTotal" class="text-white text-4xl font-bold leading-tight tracking-tighter mt-1">R$ 0,00</p>
+                    </div>
+                </div>
+                <div class="px-4">
+                    <h2 class="text-slate-500 dark:text-slate-400 text-sm font-semibold uppercase tracking-wider mb-3">Detalhamento de Custos</h2>
+                    <div class="flex flex-col gap-2 rounded-xl bg-white dark:bg-slate-900/50 shadow-sm overflow-hidden p-2">
+                        <div class="flex items-center gap-4 px-4 py-3 min-h-14 justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="text-slate-600 dark:text-slate-300 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 shrink-0 size-10">
+                                    <span class="material-symbols-outlined text-2xl">category</span>
+                                </div>
+                                <p class="text-slate-800 dark:text-slate-100 text-base font-medium leading-normal flex-1 truncate">Custo Unitário Alça</p>
+                            </div>
+                            <div class="shrink-0">
+                                <p id="outCustoAlca" class="text-slate-800 dark:text-slate-100 text-base font-medium leading-normal">R$ 0,00</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 px-4 py-3 min-h-14 justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="text-slate-600 dark:text-slate-300 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 shrink-0 size-10">
+                                    <span class="material-symbols-outlined text-2xl">inventory_2</span>
+                                </div>
+                                <p class="text-slate-800 dark:text-slate-100 text-base font-medium leading-normal flex-1 truncate">Custo Unitário TNT</p>
+                            </div>
+                            <div class="shrink-0">
+                                <p id="outCustoTNT" class="text-slate-800 dark:text-slate-100 text-base font-medium leading-normal">R$ 0,00</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 px-4 py-3 min-h-14 justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="text-slate-600 dark:text-slate-300 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 shrink-0 size-10">
+                                    <span class="material-symbols-outlined text-2xl">inventory_2</span>
+                                </div>
+                                <p class="text-slate-800 dark:text-slate-100 text-base font-medium leading-normal flex-1 truncate">Custo Unitário Algodão</p>
+                            </div>
+                            <div class="shrink-0">
+                                <p id="outCustoAlgodao" class="text-slate-800 dark:text-slate-100 text-base font-medium leading-normal">R$ 0,00</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-producao" class="tab-panel hidden p-4">
+                <div class="flex flex-col gap-2">
+                    <label class="text-base font-medium text-text-light-primary dark:text-text-dark-primary" for="quantity">Quantas bolsas você quer produzir?</label>
+                    <input id="metaProducao" class="form-input h-14 w-full rounded-xl border border-border-light bg-surface-light p-4 text-base text-text-light-primary placeholder:text-text-light-secondary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-border-dark dark:bg-surface-dark dark:text-text-dark-primary dark:placeholder:text-text-dark-secondary dark:focus:border-primary"
+                           placeholder="Ex: 50" type="number" value="30" oninput="calcularTudo()" />
+                </div>
+                <h2 class="pb-2 pt-8 text-lg font-bold tracking-tight text-text-light-primary dark:text-text-dark-primary">Lista de Compras</h2>
+                <div class="flex flex-col divide-y divide-border-light overflow-hidden rounded-xl border border-border-light bg-surface-light dark:divide-border-dark dark:border-border-dark dark:bg-surface-dark">
+                    <div class="flex min-h-[3.5rem] items-center justify-between gap-4 p-4">
+                        <div class="flex items-center gap-4">
+                            <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-background-light dark:bg-background-dark">
+                                <span class="material-symbols-outlined text-2xl text-text-light-secondary dark:text-text-dark-secondary">straighten</span>
+                            </div>
+                            <p class="flex-1 truncate text-base text-text-light-primary dark:text-text-dark-primary">Metros a comprar (Alça)</p>
+                        </div>
+                        <p id="outMetaAlca" class="shrink-0 text-base font-medium text-text-light-primary dark:text-text-dark-primary">0 m</p>
+                    </div>
+                    <div class="flex min-h-[3.5rem] items-center justify-between gap-4 p-4">
+                        <div class="flex items-center gap-4">
+                            <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-background-light dark:bg-background-dark">
+                                <span class="material-symbols-outlined text-2xl text-text-light-secondary dark:text-text-dark-secondary">texture</span>
+                            </div>
+                            <p class="flex-1 truncate text-base text-text-light-primary dark:text-text-dark-primary">Metros a comprar (TNT)</p>
+                        </div>
+                        <p id="outMetaTNT" class="shrink-0 text-base font-medium text-text-light-primary dark:text-text-dark-primary">0 m</p>
+                    </div>
+                    <div class="flex min-h-[3.5rem] items-center justify-between gap-4 p-4">
+                        <div class="flex items-center gap-4">
+                            <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-background-light dark:bg-background-dark">
+                                <span class="material-symbols-outlined text-2xl text-text-light-secondary dark:text-text-dark-secondary">grid_on</span>
+                            </div>
+                            <p class="flex-1 truncate text-base text-text-light-primary dark:text-text-dark-primary">Metros a comprar (Algodão)</p>
+                        </div>
+                        <p id="outMetaAlgodao" class="shrink-0 text-base font-medium text-text-light-primary dark:text-text-dark-primary">0 m</p>
+                    </div>
+                </div>
+                <div class="mt-8 flex flex-col gap-2 rounded-xl border border-primary/20 bg-primary/10 p-5 dark:border-primary/30 dark:bg-primary/20">
+                    <p class="text-base font-medium text-primary dark:text-primary/90">Custo Total da Compra</Gastro</p>
+                    <p id="outCustoTotalCompra" class="text-4xl font-extrabold tracking-tighter text-text-light-primary dark:text-text-dark-primary">R$ 0,00</p>
+                </div>
+            </div>
+
+            <div id="tab-vendas" class="tab-panel hidden p-4">
+                <div class="flex flex-col gap-2">
+                    <label class="text-base font-medium text-text-light-primary dark:text-text-dark-primary" for="valorVenda">Valor de Venda (R$)</label>
+                    <input id="valorVenda" class="form-input h-14 w-full rounded-xl border border-border-light bg-surface-light p-4 text-base text-text-light-primary placeholder:text-text-light-secondary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-border-dark dark:bg-surface-dark dark:text-text-dark-primary dark:placeholder:text-text-dark-secondary dark:focus:border-primary"
+                           placeholder="Ex: 35,00" type="number" value="35" oninput="calcularTudo()" />
+                </div>
+                
+                <h2 class="pb-2 pt-8 text-lg font-bold tracking-tight text-text-light-primary dark:text-text-dark-primary">Resumo do Lucro</h2>
+                
+                <div class="flex flex-col divide-y divide-border-light overflow-hidden rounded-xl border border-border-light bg-surface-light dark:divide-border-dark dark:border-border-dark dark:bg-surface-dark">
+                    <div class="flex min-h-[3.5rem] items-center justify-between gap-4 p-4">
+                        <div class="flex items-center gap-4">
+                            <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-background-light dark:bg-background-dark">
+                                <span class="material-symbols-outlined text-2xl text-text-light-secondary dark:text-text-dark-secondary">inventory</span>
+                            </div>
+                            <p class="flex-1 truncate text-base text-text-light-primary dark:text-text-dark-primary">Quantidade de Bolsas</p>
+                        </div>
+                        <p id="outMetaVenda" class="shrink-0 text-base font-medium text-text-light-primary dark:text-text-dark-primary">0 un</p>
+                    </div>
+                    <div class="flex min-h-[3.5rem] items-center justify-between gap-4 p-4">
+                        <div class="flex items-center gap-4">
+                            <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-background-light dark:bg-background-dark">
+                                <span class="material-symbols-outlined text-2xl text-text-light-secondary dark:text-text-dark-secondary">shopping_cart</span>
+                            </div>
+                            <p class="flex-1 truncate text-base text-text-light-primary dark:text-text-dark-primary">Custo por Bolsa</g>
+                        </div>
+                        <p id="outCustoBolsaVenda" class="shrink-0 text-base font-medium text-red-600 dark:text-red-500">R$ 0,00</p>
+                    </div>
+                    <div class="flex min-h-[3.5rem] items-center justify-between gap-4 p-4">
+                        <div class="flex items-center gap-4">
+                            <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-background-light dark:bg-background-dark">
+                                <span class="material-symbols-outlined text-2xl text-text-light-secondary dark:text-text-dark-secondary">savings</span>
+                            </div>
+                            <p class="flex-1 truncate text-base text-text-light-primary dark:text-text-dark-primary">Lucro por Bolsa</p>
+                        </div>
+                        <p id="outLucroUnitario" class="shrink-0 text-base font-medium text-green-600 dark:text-green-500">R$ 0,00</p>
+                    </div>
+                </div>
+
+                <div class="mt-8 flex flex-col gap-2 rounded-xl border border-primary/20 bg-primary/10 p-5 dark:border-primary/30 dark:bg-primary/20">
+                    <p class="text-base font-medium text-primary dark:text-primary/90">Lucro Bruto Estimado Total</p>
+                    <p id="outLucroTotal" class="text-4xl font-extrabold tracking-tighter text-text-light-primary dark:text-text-dark-primary">R$ 0,00</p>
+                </div>
+            </div>
+
+        </main>
+
+        <footer class="fixed bottom-0 z-10 w-full border-t border-border-light/80 bg-background-light/80 dark:border-border-dark/80 dark:bg-background-dark/80 pb-safe backdrop-blur-sm">
+            <nav class="grid h-[72px] grid-cols-4 px-2"> 
+                <a id="nav-insumos" class="nav-link flex flex-col items-center justify-center gap-1.5 text-primary" href="#" data-tab="insumos">
+                    <span class="material-symbols-outlined text-2xl filled">widgets</span>
+                    <span class="text-xs font-bold">Insumos</span>
+                </a>
+                <a id="nav-custos" class="nav-link flex flex-col items-center justify-center gap-1.5 text-text-secondary-light dark:text-text-secondary-dark" href="#" data-tab="custos">
+                    <span class="material-symbols-outlined text-2xl">request_quote</span>
+                    <span class="text-xs font-medium">Custos</span>
+                </a>
+                <a id="nav-producao" class="nav-link flex flex-col items-center justify-center gap-1.5 text-text-secondary-light dark:text-text-secondary-dark" href="#" data-tab="producao">
+                    <span class="material-symbols-outlined text-2xl">inventory_2</span>
+                    <span class="text-xs font-medium">Produção</span>
+                </a>
+                <a id="nav-vendas" class="nav-link flex flex-col items-center justify-center gap-1.5 text-text-secondary-light dark:text-text-secondary-dark" href="#" data-tab="vendas">
+                    <span class="material-symbols-outlined text-2xl">trending_up</span>
+                    <span class="text-xs font-medium">Vendas</span>
+                </a>
+            </nav>
+        </footer>
+    </div>
+
+    <script>
+        // --- FUNÇÕES HELPER ---
+
+        function formatarMoeda(valor) {
+            return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function lerFloat(id) {
+            const el = document.getElementById(id);
+            return parseFloat(el.value) || 0;
+        }
+
+        /**
+         * Escreve um valor formatado em um elemento.
+         * @param {string} id - ID do elemento.
+         * @param {number} valor - Valor numérico.
+         * @param {'moeda' | 'metro' | 'unidade'} tipo - Tipo de formatação.
+         */
+        function escreverValor(id, valor, tipo = 'moeda') {
+            const el = document.getElementById(id);
+            if (!el) return;
+            
+            if (tipo === 'moeda') {
+                el.textContent = formatarMoeda(valor);
+            } else if (tipo === 'metro') {
+                el.textContent = valor.toFixed(2) + ' m';
+            } else if (tipo === 'unidade') {
+                el.textContent = valor.toString() + ' un';
+            } else {
+                el.textContent = valor.toString();
+            }
+        }
+        
+        // Títulos das abas (NOVO TÍTULO ADICIONADO)
+        const titulosAbas = {
+            insumos: "Custos de Insumos",
+            custos: "Análise de Custos",
+            producao: "Calculadora de Produção",
+            vendas: "Planejamento de Venda" // NOVO
+        };
+
+        // --- LÓGICA DE NAVEGAÇÃO ---
+
+        function ativarAba(tabId) {
+            // Esconde todas as abas
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.classList.add('hidden');
+            });
+            
+            // Mostra a aba clicada
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            // Atualiza o título do Header
+            document.getElementById('header-title').textContent = titulosAbas[tabId];
+
+            // Atualiza o estado visual da navegação
+            document.querySelectorAll('.nav-link').forEach(link => {
+                const linkIcon = link.querySelector('.material-symbols-outlined');
+                const linkLabel = link.querySelector('span:last-child');
+
+                if (link.dataset.tab === tabId) {
+                    // Ativa
+                    link.classList.add('text-primary');
+                    link.classList.remove('text-text-secondary-light', 'dark:text-text-secondary-dark');
+                    linkIcon.classList.add('filled');
+                    linkLabel.classList.add('font-bold');
+                    linkLabel.classList.remove('font-medium');
+                } else {
+                    // Desativa
+                    link.classList.remove('text-primary');
+                    link.classList.add('text-text-secondary-light', 'dark:text-text-secondary-dark');
+                    linkIcon.classList.remove('filled');
+                    linkLabel.classList.remove('font-bold');
+                    linkLabel.classList.add('font-medium');
+                }
+            });
+        }
+
+        // Adiciona os event listeners para os botões de navegação
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const tabId = e.currentTarget.dataset.tab;
+                ativarAba(tabId);
+            });
+        });
+
+        // --- LÓGICA PRINCIPAL DE CÁLCULO ---
+
+        function calcularTudo() {
+            // --- 1. LER TODOS OS INPUTS ---
+            
+            // Alça
+            const precoAlca = lerFloat('precoAlca');
+            const cmAlca = lerFloat('cmAlca');
+            
+            // Material 1 (TNT)
+            const precoTNT = lerFloat('precoTNT');
+            const larguraTNT = lerFloat('larguraTNT');
+            const alturaPecaTNT = lerFloat('alturaPecaTNT');
+            const larguraPecaTNT = lerFloat('larguraPecaTNT');
+            
+            // Material 2 (Algodão)
+            const precoAlgodao = lerFloat('precoAlgodao');
+            const larguraAlgodao = lerFloat('larguraAlgodao');
+            const alturaPecaAlgodao = lerFloat('alturaPecaAlgodao');
+            const larguraPecaAlgodao = lerFloat('larguraPecaAlgodao');
+
+            // Meta de Produção
+            const metaProducao = lerFloat('metaProducao');
+
+            // Aba de Vendas (NOVO)
+            const valorVenda = lerFloat('valorVenda');
+
+            // --- 2. CALCULAR CUSTOS UNITÁRIOS (Aba "Custos") ---
+
+            // Alça
+            const custoUnitarioAlca = (cmAlca / 100) * precoAlca;
+
+            // TNT
+            const qtdHorizontalTNT = Math.trunc(larguraTNT / larguraPecaTNT) || 1; // `|| 1` evita divisão por zero
+            const custoFileiraTNT = (alturaPecaTNT / 100) * precoTNT;
+            const custoUnitarioTNT = custoFileiraTNT / qtdHorizontalTNT;
+
+            // Algodão
+            const qtdHorizontalAlgodao = Math.trunc(larguraAlgodao / larguraPecaAlgodao) || 1; // `|| 1` evita divisão por zero
+            const custoFileiraAlgodao = (alturaPecaAlgodao / 100) * precoAlgodao;
+            const custoUnitarioAlgodao = custoFileiraAlgodao / qtdHorizontalAlgodao;
+
+            // Total
+            const custoTotalPorBolsa = custoUnitarioAlca + custoUnitarioTNT + custoUnitarioAlgodao;
+
+            // --- 3. ATUALIZAR ABA "Custos" ---
+            escreverValor('outCustoAlca', custoUnitarioAlca, 'moeda');
+            escreverValor('outCustoTNT', custoUnitarioTNT, 'moeda');
+            escreverValor('outCustoAlgodao', custoUnitarioAlgodao, 'moeda');
+            escreverValor('outCustoTotal', custoTotalPorBolsa, 'moeda');
+
+            // --- 4. CALCULAR LISTA DE COMPRAS (Aba "Produção") ---
+
+            // Alça
+            const metrosAlcaComprar = metaProducao * (cmAlca / 100);
+            
+            // TNT
+            const fileirasTNTComprar = Math.ceil(metaProducao / qtdHorizontalTNT);
+            const metrosTNTComprar = fileirasTNTComprar * (alturaPecaTNT / 100);
+            
+            // Algodão
+            const fileirasAlgodaoComprar = Math.ceil(metaProducao / qtdHorizontalAlgodao);
+            const metrosAlgodaoComprar = fileirasAlgodaoComprar * (alturaPecaAlgodao / 100);
+
+            // Custo Total da Compra
+            const custoMetaAlca = metrosAlcaComprar * precoAlca;
+            const custoMetaTNT = metrosTNTComprar * precoTNT;
+            const custoMetaAlgodao = metrosAlgodaoComprar * precoAlgodao;
+            const custoTotalMeta = custoMetaAlca + custoMetaTNT + custoMetaAlgodao;
+
+            // --- 5. ATUALIZAR ABA "Produção" ---
+            escreverValor('outMetaAlca', metrosAlcaComprar, 'metro');
+            escreverValor('outMetaTNT', metrosTNTComprar, 'metro');
+            escreverValor('outMetaAlgodao', metrosAlgodaoComprar, 'metro');
+            escreverValor('outCustoTotalCompra', custoTotalMeta, 'moeda');
+
+            // --- 6. CALCULAR LUCRO (Aba "Vendas") (NOVO) ---
+            const lucroBrutoUnitario = valorVenda - custoTotalPorBolsa;
+            const lucroBrutoTotal = lucroBrutoUnitario * metaProducao;
+
+            // --- 7. ATUALIZAR ABA "Vendas" (NOVO) ---
+            escreverValor('outMetaVenda', metaProducao, 'unidade');
+            escreverValor('outCustoBolsaVenda', custoTotalPorBolsa, 'moeda');
+            escreverValor('outLucroUnitario', lucroBrutoUnitario, 'moeda');
+            escreverValor('outLucroTotal', lucroBrutoTotal, 'moeda');
+        }
+
+        // --- INICIALIZAÇÃO ---
+        window.onload = () => {
+            ativarAba('insumos');
+            calcularTudo();
+        };
+
+    </script>
+</body>
+</html>
