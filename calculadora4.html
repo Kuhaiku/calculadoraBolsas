@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Calculadora 2.0 (Otimizada)</title>
+    <title>Calculadora 3.0 (Design Otimizado)</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
@@ -69,40 +69,67 @@
             display: none;
         }
         
-        /* (NOVO) Estilos para visualização do corte */
-        .visual-fabric {
-            position: relative;
-            width: 100%;
-            height: 80px; /* Altura fixa para o visual */
-            background-color: #e5e7eb; /* bg-slate-200 */
-            border: 1px solid #d1d5db; /* border-slate-300 */
-            border-radius: 0.25rem; /* rounded-sm */
-            overflow: hidden;
-            display: flex; /* Usar flex para alinhar as peças */
-            align-items: center; /* Centralizar verticalmente */
-            padding: 4px; /* Pequeno padding */
-            gap: 4px; /* Espaço entre as peças */
+        /* (NOVO) Estilos para Simulador de Corte Comparativo */
+        .simulador-corte {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-top: 0.75rem;
         }
-        .dark .visual-fabric {
-            background-color: #334155; /* dark:bg-slate-700 */
-            border-color: #475569; /* dark:border-slate-600 */
+        /* Em telas maiores, mostra lado a lado */
+        @media (min-width: 640px) {
+            .simulador-corte {
+                grid-template-columns: 1fr 1fr;
+            }
         }
-        .visual-piece {
-            height: 90%; /* Ocupa a maior parte da altura */
-            background-color: #60a5fa; /* bg-blue-400 */
-            border: 1px solid #2563eb; /* border-blue-600 */
+        .simulador-opcao {
+            border: 2px solid;
+            border-radius: 0.75rem; /* rounded-lg */
+            padding: 0.75rem; /* p-3 */
+            background-color: #f8fafc; /* bg-slate-50 */
+        }
+        .dark .simulador-opcao {
+            background-color: #1e293b; /* dark:bg-slate-800 */
+        }
+        
+        /* Opção Otimizada */
+        .simulador-opcao.melhor {
+            border-color: #16a34a; /* border-green-600 */
+            box-shadow: 0 4px 10px rgba(22, 163, 74, 0.1);
+        }
+        /* Opção Alternativa */
+        .simulador-opcao.pior {
+            border-color: #dbe0e6; /* border-border-light */
             opacity: 0.8;
-            flex-shrink: 0; /* Impede que a peça encolha */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            color: #1e3a8a;
-            font-weight: 500;
-            overflow: hidden;
-            writing-mode: vertical-rl; /* Escreve o texto na vertical */
-            text-orientation: mixed;
         }
+        .dark .simulador-opcao.pior {
+            border-color: #34404C; /* dark:border-border-dark */
+        }
+
+        .simulador-svg {
+            width: 100%;
+            height: 60px;
+            border-radius: 0.25rem; /* rounded */
+            margin-top: 0.5rem; /* mt-2 */
+        }
+        .svg-tecido {
+            fill: #e2e8f0; /* fill-slate-200 */
+        }
+        .dark .svg-tecido {
+            fill: #334155; /* dark:fill-slate-700 */
+        }
+        .svg-peca {
+            fill: #60a5fa; /* fill-blue-400 */
+            stroke: #2563eb; /* stroke-blue-600 */
+            stroke-width: 1px;
+        }
+        .simulador-label {
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 500; /* font-medium */
+            margin-top: 0.5rem; /* mt-2 */
+            text-align: center;
+        }
+
     </style>
 </head>
 
@@ -119,6 +146,7 @@
             
             <div id="tab-insumos" class="tab-panel px-4 py-6">
                 <div class="flex flex-col gap-6">
+                    
                     <div class="rounded-xl bg-card-light dark:bg-card-dark p-5 shadow-[0_4px_12px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
                         <h2 class="text-text-light dark:text-text-dark text-[22px] font-bold leading-tight tracking-[-0.015em] mb-4">Materiais Principais</h2>
                         
@@ -180,9 +208,9 @@
                     </div>
                     
                     <div class="rounded-xl bg-card-light dark:bg-card-dark p-5 shadow-[0_4px_12px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
-                        <h2 class="text-text-light dark:text-text-dark text-[22px] font-bold leading-tight tracking-[-0.015em] mb-4">Custos Adicionais</h2>
+                        <h2 class="text-text-light dark:text-text-dark text-[22px] font-bold leading-tight tracking-[-0.015em] mb-4">Custos Variáveis</h2>
                         
-                        <h3 class="text-text-secondary-light dark:text-text-secondary-dark text-sm font-semibold uppercase tracking-wider mb-2 mt-4">Custos Variáveis (por bolsa)</h3>
+                        <h3 class="text-text-secondary-light dark:text-text-secondary-dark text-sm font-semibold uppercase tracking-wider mb-2 mt-4">Extras (por bolsa)</h3>
                         <div class="grid grid-cols-3 gap-4">
                             <label class="flex flex-col">
                                 <p class="text-base font-medium leading-normal pb-2 text-text-light dark:text-text-dark">Etiqueta (R$)</p>
@@ -224,14 +252,19 @@
                                 </label>
                             </div>
                         </div>
-
-                        <h3 class="text-text-secondary-light dark:text-text-secondary-dark text-sm font-semibold uppercase tracking-wider mb-2 mt-6">Custos Fixos (Rateio Mensal)</h3>
+                    </div>
+                    
+                    <div class="rounded-xl bg-card-light dark:bg-card-dark p-5 shadow-[0_4px_12px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
+                        <h2 class="text-text-light dark:text-text-dark text-[22px] font-bold leading-tight tracking-[-0.015em] mb-4">Custos Fixos (Rateio)</h2>
+                        
                         <div class="flex flex-col gap-4">
                             <label class="flex flex-col">
                                 <p class="text-base font-medium leading-normal pb-2 text-text-light dark:text-text-dark">Produção Mensal Estimada (un)</p>
                                 <input id="producaoMensalEstimada" class="form-input h-14 w-full ... " inputmode="numeric" placeholder="100" type="number" value="100" oninput="calcularTudo()">
                             </label>
-                            <div class="grid grid-cols-2 gap-4">
+                            <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark -mt-2">Usado para ratear os custos fixos no preço de cada bolsa.</p>
+                            
+                            <div class="grid grid-cols-2 gap-4 mt-2">
                                 <label class="flex flex-col">
                                     <p class="text-base font-medium leading-normal pb-2 text-text-light dark:text-text-dark">Aluguel (R$)</p>
                                     <input id="custoAluguel" class="form-input h-14 w-full ... " inputmode="decimal" placeholder="0,00" type="number" value="0" oninput="calcularTudo()">
@@ -251,6 +284,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
 
@@ -264,6 +298,7 @@
                 <div class="px-4">
                     <h2 class="text-slate-500 dark:text-slate-400 text-sm font-semibold uppercase tracking-wider mb-3">Detalhamento de Custos</h2>
                     <div class="flex flex-col gap-2 rounded-xl bg-white dark:bg-slate-900/50 shadow-sm overflow-hidden p-2">
+                        
                         <div class="flex items-center gap-4 px-4 py-3 min-h-14 justify-between">
                             <div class="flex items-center gap-4">
                                 <div class="text-slate-600 dark:text-slate-300 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 shrink-0 size-10">
@@ -288,11 +323,17 @@
                                     <p id="outCustoTNT" class="text-slate-800 dark:text-slate-100 text-base font-medium leading-normal">R$ 0,00</p>
                                 </div>
                             </div>
-                            <div class="mt-3">
-                                <p class="text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">Aproveitamento do TNT:</p>
-                                <div id="vis-tnt-container" class="visual-fabric">
-                                    </div>
-                                <p id="vis-tnt-label" class="text-sm text-slate-500 dark:text-slate-400 mt-2 text-center">Calculando...</p>
+                            <div class="simulador-corte" id="simulador-tnt">
+                                <div class="simulador-opcao" id="simulador-tnt-a">
+                                    <p class="text-sm font-bold text-green-600">Opção Otimizada</p>
+                                    <svg class="simulador-svg" id="svg-tnt-a"></svg>
+                                    <p class="simulador-label" id="label-tnt-a">Calculando...</p>
+                                </div>
+                                <div class="simulador-opcao" id="simulador-tnt-b">
+                                    <p class="text-sm font-semibold text-text-secondary-light dark:text-text-secondary-dark">Opção Alternativa</p>
+                                    <svg class="simulador-svg" id="svg-tnt-b"></svg>
+                                    <p class="simulador-label" id="label-tnt-b">Calculando...</p>
+                                </div>
                             </div>
                         </div>
 
@@ -308,11 +349,17 @@
                                     <p id="outCustoAlgodao" class="text-slate-800 dark:text-slate-100 text-base font-medium leading-normal">R$ 0,00</p>
                                 </div>
                             </div>
-                            <div class="mt-3">
-                                <p class="text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">Aproveitamento do Algodão:</p>
-                                <div id="vis-algodao-container" class="visual-fabric">
-                                    </div>
-                                <p id="vis-algodao-label" class="text-sm text-slate-500 dark:text-slate-400 mt-2 text-center">Calculando...</p>
+                            <div class="simulador-corte" id="simulador-algodao">
+                                <div class="simulador-opcao" id="simulador-algodao-a">
+                                    <p class="text-sm font-bold text-green-600">Opção Otimizada</p>
+                                    <svg class="simulador-svg" id="svg-algodao-a"></svg>
+                                    <p class="simulador-label" id="label-algodao-a">Calculando...</p>
+                                </div>
+                                <div class="simulador-opcao" id="simulador-algodao-b">
+                                    <p class="text-sm font-semibold text-text-secondary-light dark:text-text-secondary-dark">Opção Alternativa</p>
+                                    <svg class="simulador-svg" id="svg-algodao-b"></svg>
+                                    <p class="simulador-label" id="label-algodao-b">Calculando...</p>
+                                </div>
                             </div>
                         </div>
 
@@ -321,7 +368,7 @@
                                 <div class="text-slate-600 dark:text-slate-300 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 shrink-0 size-10">
                                     <span class="material-symbols-outlined text-2xl">label</span>
                                 </div>
-                                <p class="text-slate-800 dark:text-slate-100 text-base font-medium leading-normal flex-1 truncate">Custos (Etiq./Emb./Tinta)</p>
+                                <p class="text-slate-800 dark:text-slate-100 text-base font-medium leading-normal flex-1 truncate">Custos Variáveis Extras</p>
                             </div>
                             <div class="shrink-0">
                                 <p id="outCustoVariavelExtra" class="text-slate-800 dark:text-slate-100 text-base font-medium leading-normal">R$ 0,00</p>
@@ -349,7 +396,6 @@
                                 <p id="outCustoFixoRateado" class="text-slate-800 dark:text-slate-100 text-base font-medium leading-normal">R$ 0,00</p>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -537,6 +583,9 @@
     </div>
 
     <script>
+        // Namespace para SVG
+        const SVG_NS = 'http://www.w3.org/2000/svg';
+        
         // --- FUNÇÕES HELPER ---
 
         function formatarMoeda(valor) {
@@ -567,7 +616,7 @@
         }
         
         const titulosAbas = {
-            insumos: "Custos de Insumos",
+            insumos: "Entrada de Insumos",
             custos: "Análise de Custos",
             producao: "Calculadora de Produção",
             vendas: "Planejamento de Venda",
@@ -633,88 +682,133 @@
         // --- (NOVO) LÓGICA DE OTIMIZAÇÃO DE CORTE ---
 
         /**
-         * Calcula o melhor aproveitamento de tecido, testando duas orientações.
-         * @returns {Object} O resultado otimizado.
+         * Calcula o custo para uma orientação específica.
          */
-        function calcularAproveitamento(precoMetro, larguraTecido, alturaPeca, larguraPeca) {
-            // Evitar divisão por zero se os valores forem 0
-            if (!larguraTecido || !alturaPeca || !larguraPeca) {
-                return { custoUnitario: 0, pecasPorLargura: 1, alturaFileira: 0, orientacao: 'inválida' };
+        function calcularCustoOrientacao(precoMetro, larguraTecido, dimensaoNaLargura, dimensaoNoComprimento) {
+            if (dimensaoNaLargura === 0 || larguraTecido < dimensaoNaLargura) {
+                return { custoUnitario: Infinity, pecasPorLargura: 0, alturaFileira: 0 };
+            }
+            
+            const pecasPorLargura = Math.floor(larguraTecido / dimensaoNaLargura);
+            if (pecasPorLargura === 0) {
+                return { custoUnitario: Infinity, pecasPorLargura: 0, alturaFileira: 0 };
             }
 
-            // Teste 1: Orientação "Retrato" (Largura da peça contra Largura do tecido)
-            const pecasPorLargura_1 = Math.floor(larguraTecido / larguraPeca);
-            let custoUnitario_1 = Infinity;
-            if (pecasPorLargura_1 > 0) {
-                const custoFileira_1 = (alturaPeca / 100) * precoMetro; // Custo de puxar 'alturaPeca' do rolo
-                custoUnitario_1 = custoFileira_1 / pecasPorLargura_1;
-            }
-
-            // Teste 2: Orientação "Paisagem" (Altura da peça contra Largura do tecido)
-            const pecasPorLargura_2 = Math.floor(larguraTecido / alturaPeca);
-            let custoUnitario_2 = Infinity;
-            if (pecasPorLargura_2 > 0) {
-                const custoFileira_2 = (larguraPeca / 100) * precoMetro; // Custo de puxar 'larguraPeca' do rolo
-                custoUnitario_2 = custoFileira_2 / pecasPorLargura_2;
-            }
-
-            // Comparar e retornar o melhor resultado
-            if (custoUnitario_1 <= custoUnitario_2) {
-                return {
-                    custoUnitario: custoUnitario_1,
-                    pecasPorLargura: pecasPorLargura_1,
-                    alturaFileira: alturaPeca, // Comprimento (cm) do rolo usado para esta fileira
-                    larguraPecaUsada: larguraPeca, // A dimensão da peça que foi contra a largura do tecido
-                    orientacao: 'Padrão (Largura Peça)'
-                };
-            } else {
-                return {
-                    custoUnitario: custoUnitario_2,
-                    pecasPorLargura: pecasPorLargura_2,
-                    alturaFileira: larguraPeca, // Comprimento (cm) do rolo usado para esta fileira
-                    larguraPecaUsada: alturaPeca, // A dimensão da peça que foi contra a largura do tecido
-                    orientacao: 'Rotacionada (Altura Peça)'
-                };
-            }
+            const custoFileira = (dimensaoNoComprimento / 100) * precoMetro;
+            const custoUnitario = custoFileira / pecasPorLargura;
+            
+            return {
+                custoUnitario: custoUnitario,
+                pecasPorLargura: pecasPorLargura,
+                alturaFileira: dimensaoNoComprimento, // O quanto "puxa" do rolo
+                dimensaoUsadaNaLargura: dimensaoNaLargura
+            };
         }
 
         /**
-         * (NOVO) Atualiza a visualização do corte
+         * Calcula o melhor aproveitamento, comparando as duas orientações.
+         * @returns {Object} Contém as duas opções (padrao e rotacionada) e a melhor.
          */
-        function atualizarVisualizacao(containerId, labelId, resultado, larguraTecido) {
-            const container = document.getElementById(containerId);
+        function calcularAproveitamentoOtimizado(precoMetro, larguraTecido, alturaPeca, larguraPeca) {
+            if (!larguraTecido || !alturaPeca || !larguraPeca || !precoMetro) {
+                const invalido = { custoUnitario: 0, pecasPorLargura: 1, alturaFileira: 0, dimensaoUsadaNaLargura: 0, orientacao: 'inválida' };
+                return { padrao: invalido, rotacionada: invalido, melhor: invalido };
+            }
+
+            // Opção 1: Padrão (Largura Peça na Largura Tecido)
+            const resPadrao = calcularCustoOrientacao(precoMetro, larguraTecido, larguraPeca, alturaPeca);
+            resPadrao.orientacao = "Padrão"; // (Largura da Peça)
+
+            // Opção 2: Rotacionada (Altura Peça na Largura Tecido)
+            const resRotacionada = calcularCustoOrientacao(precoMetro, larguraTecido, alturaPeca, larguraPeca);
+            resRotacionada.orientacao = "Rotacionada"; // (Altura da Peça)
+
+            let resultado;
+            if (resPadrao.custoUnitario <= resRotacionada.custoUnitario) {
+                resultado = {
+                    padrao: resPadrao,
+                    rotacionada: resRotacionada,
+                    melhor: resPadrao
+                };
+            } else {
+                resultado = {
+                    padrao: resPadrao,
+                    rotacionada: resRotacionada,
+                    melhor: resRotacionada
+                };
+            }
+            return resultado;
+        }
+        
+        /**
+         * (NOVO) Desenha uma opção de corte no SVG
+         */
+        function desenharOpcaoDeCorte(svgId, labelId, opcao, larguraTecido) {
+            const svg = document.getElementById(svgId);
             const label = document.getElementById(labelId);
-            if (!container || !label) return;
+            if (!svg || !label) return;
 
-            // Limpar visualização anterior
-            container.innerHTML = '';
+            // Limpar SVG
+            while (svg.firstChild) {
+                svg.removeChild(svg.firstChild);
+            }
 
-            if (!resultado || resultado.pecasPorLargura === 0 || !isFinite(resultado.custoUnitario)) {
-                label.textContent = 'Dimensões inválidas para o corte.';
+            // 1. Desenhar o Tecido (fundo)
+            const tecidoRect = document.createElementNS(SVG_NS, 'rect');
+            tecidoRect.setAttribute('x', '0');
+            tecidoRect.setAttribute('y', '0');
+            tecidoRect.setAttribute('width', '100%');
+            tecidoRect.setAttribute('height', '100%');
+            tecidoRect.setAttribute('class', 'svg-tecido');
+            svg.appendChild(tecidoRect);
+
+            if (!opcao || opcao.pecasPorLargura === 0 || !isFinite(opcao.custoUnitario)) {
+                label.textContent = "Corte Inválido";
                 return;
             }
 
-            // Desenhar as peças
-            const larguraTotalUsada = resultado.pecasPorLargura * resultado.larguraPecaUsada;
-            const sobra = larguraTecido - larguraTotalUsada;
-
-            for (let i = 0; i < resultado.pecasPorLargura; i++) {
-                const piece = document.createElement('div');
-                piece.className = 'visual-piece';
-                // Usar porcentagem para o visual
-                piece.style.width = `${(resultado.larguraPecaUsada / larguraTecido) * 100}%`;
-                piece.textContent = `${resultado.larguraPecaUsada}cm`;
-                container.appendChild(piece);
+            // 2. Desenhar as Peças
+            const larguraPecaPercent = (opcao.dimensaoUsadaNaLargura / larguraTecido) * 100;
+            
+            for (let i = 0; i < opcao.pecasPorLargura; i++) {
+                const pecaRect = document.createElementNS(SVG_NS, 'rect');
+                pecaRect.setAttribute('x', `${i * larguraPecaPercent}%`);
+                pecaRect.setAttribute('y', '5%'); // Margem
+                pecaRect.setAttribute('width', `${larguraPecaPercent}%`);
+                pecaRect.setAttribute('height', '90%'); // Margem
+                pecaRect.setAttribute('class', 'svg-peca');
+                svg.appendChild(pecaRect);
             }
 
-            // Atualizar label
-            label.textContent = `Orientação: ${resultado.orientacao} (${resultado.larguraPecaUsada}cm). Cabem ${resultado.pecasPorLargura} peças. (Sobra: ${sobra.toFixed(1)}cm)`;
+            // 3. Atualizar Label
+            label.textContent = `${opcao.orientacao}: Cabem ${opcao.pecasPorLargura} un. Custo: ${formatarMoeda(opcao.custoUnitario)}`;
         }
 
 
+        /**
+         * (NOVO) Atualiza a visualização comparativa
+         */
+        function atualizarVisualizacaoComparativa(prefixo, resultado, larguraTecido) {
+            const containerA = document.getElementById(`${prefixo}-a`);
+            const containerB = document.getElementById(`${prefixo}-b`);
+            
+            if (!containerA || !containerB) return;
+
+            // Identificar qual é a melhor e qual é a pior
+            const melhor = resultado.melhor;
+            const pior = (melhor.orientacao === resultado.padrao.orientacao) ? resultado.rotacionada : resultado.padrao;
+
+            // Configurar a Opção Otimizada (A)
+            containerA.className = 'simulador-opcao melhor';
+            desenharOpcaoDeCorte(`svg-${prefixo}-a`, `label-${prefixo}-a`, melhor, larguraTecido);
+
+            // Configurar a Opção Alternativa (B)
+            containerB.className = 'simulador-opcao pior';
+            desenharOpcaoDeCorte(`svg-${prefixo}-b`, `label-${prefixo}-b`, pior, larguraTecido);
+        }
+
         // --- LÓGICA PRINCIPAL DE CÁLCULO ---
         
-        // (NOVO) Armazena os resultados da otimização para usar na aba 'Produção'
         let resultadoOtimizadoTNT = {};
         let resultadoOtimizadoAlgodao = {};
 
@@ -762,15 +856,14 @@
 
             // --- 2. CALCULAR CUSTOS UNITÁRIOS (Aba "Custos") ---
 
-            // Custo Materiais
             const custoUnitarioAlca = (cmAlca / 100) * precoAlca;
             
             // (NOVO) Cálculo Otimizado
-            resultadoOtimizadoTNT = calcularAproveitamento(precoTNT, larguraTNT, alturaPecaTNT, larguraPecaTNT);
-            const custoUnitarioTNT = resultadoOtimizadoTNT.custoUnitario;
+            resultadoOtimizadoTNT = calcularAproveitamentoOtimizado(precoTNT, larguraTNT, alturaPecaTNT, larguraPecaTNT);
+            const custoUnitarioTNT = resultadoOtimizadoTNT.melhor.custoUnitario;
             
-            resultadoOtimizadoAlgodao = calcularAproveitamento(precoAlgodao, larguraAlgodao, alturaPecaAlgodao, larguraPecaAlgodao);
-            const custoUnitarioAlgodao = resultadoOtimizadoAlgodao.custoUnitario;
+            resultadoOtimizadoAlgodao = calcularAproveitamentoOtimizado(precoAlgodao, larguraAlgodao, alturaPecaAlgodao, larguraPecaAlgodao);
+            const custoUnitarioAlgodao = resultadoOtimizadoAlgodao.melhor.custoUnitario;
 
             // Custo Variável Extra
             const custoUnitarioVariavelExtra = precoEtiqueta + precoEmbalagem + precoTinta;
@@ -789,36 +882,39 @@
 
             // Custo Total
             const custoTotalPorBolsa = custoUnitarioAlca + 
-                                       custoUnitarioTNT + 
-                                       custoUnitarioAlgodao + 
+                                       (isFinite(custoUnitarioTNT) ? custoUnitarioTNT : 0) + 
+                                       (isFinite(custoUnitarioAlgodao) ? custoUnitarioAlgodao : 0) + 
                                        custoUnitarioVariavelExtra + 
                                        custoUnitarioMaoDeObra + 
                                        custoUnitarioFixoRateado;
 
             // --- 3. ATUALIZAR ABA "Custos" ---
             escreverValor('outCustoAlca', custoUnitarioAlca, 'moeda');
-            escreverValor('outCustoTNT', custoUnitarioTNT, 'moeda');
-            escreverValor('outCustoAlgodao', custoUnitarioAlgodao, 'moeda');
+            escreverValor('outCustoTNT', isFinite(custoUnitarioTNT) ? custoUnitarioTNT : 0, 'moeda');
+            escreverValor('outCustoAlgodao', isFinite(custoUnitarioAlgodao) ? custoUnitarioAlgodao : 0, 'moeda');
             escreverValor('outCustoVariavelExtra', custoUnitarioVariavelExtra, 'moeda');
             escreverValor('outCustoMaoDeObra', custoUnitarioMaoDeObra, 'moeda');
             escreverValor('outCustoFixoRateado', custoUnitarioFixoRateado, 'moeda');
             escreverValor('outCustoTotal', custoTotalPorBolsa, 'moeda');
             
-            // (NOVO) Atualizar Visualizações
-            atualizarVisualizacao('vis-tnt-container', 'vis-tnt-label', resultadoOtimizadoTNT, larguraTNT);
-            atualizarVisualizacao('vis-algodao-container', 'vis-algodao-label', resultadoOtimizadoAlgodao, larguraAlgodao);
+            // (NOVO) Atualizar Visualizações Comparativas
+            atualizarVisualizacaoComparativa('simulador-tnt', resultadoOtimizadoTNT, larguraTNT);
+            atualizarVisualizacaoComparativa('simulador-algodao', resultadoOtimizadoAlgodao, larguraAlgodao);
 
 
             // --- 4. CALCULAR LISTA DE COMPRAS (Aba "Produção") ---
-            // Usa os resultados otimizados
             
             const metrosAlcaComprar = metaProducao * (cmAlca / 100);
             
-            const fileirasTNTComprar = Math.ceil(metaProducao / (resultadoOtimizadoTNT.pecasPorLargura || 1));
-            const metrosTNTComprar = fileirasTNTComprar * (resultadoOtimizadoTNT.alturaFileira / 100);
+            const pecasPorFileiraTNT = resultadoOtimizadoTNT.melhor.pecasPorLargura || 1;
+            const alturaFileiraTNT = resultadoOtimizadoTNT.melhor.alturaFileira;
+            const fileirasTNTComprar = Math.ceil(metaProducao / pecasPorFileiraTNT);
+            const metrosTNTComprar = fileirasTNTComprar * (alturaFileiraTNT / 100);
             
-            const fileirasAlgodaoComprar = Math.ceil(metaProducao / (resultadoOtimizadoAlgodao.pecasPorLargura || 1));
-            const metrosAlgodaoComprar = fileirasAlgodaoComprar * (resultadoOtimizadoAlgodao.alturaFileira / 100);
+            const pecasPorFileiraAlgodao = resultadoOtimizadoAlgodao.melhor.pecasPorLargura || 1;
+            const alturaFileiraAlgodao = resultadoOtimizadoAlgodao.melhor.alturaFileira;
+            const fileirasAlgodaoComprar = Math.ceil(metaProducao / pecasPorFileiraAlgodao);
+            const metrosAlgodaoComprar = fileirasAlgodaoComprar * (alturaFileiraAlgodao / 100);
 
             // Custo Total da Compra (Apenas Materiais)
             const custoMetaAlca = metrosAlcaComprar * precoAlca;
@@ -839,7 +935,6 @@
             // --- 7. ATUALIZAR ABA "Vendas" ---
             escreverValor('outMetaVenda', metaProducao, 'unidade');
             escreverValor('outCustoBolsaVenda', custoTotalPorBolsa, 'moeda');
-            // LINHA 842 (CORRIGIDA - "E" REMOVIDO)
             escreverValor('outLucroUnitario', lucroBrutoUnitario, 'moeda');
             escreverValor('outLucroTotal', lucroBrutoTotal, 'moeda');
 
@@ -848,7 +943,7 @@
             const totalOrcamento = subtotalOrcamento + orcamentoFrete + orcamentoTaxaUrgencia;
             
             escreverValor('outOrcamentoQuantidade', metaProducao, 'unidade');
-            escreverValor('outOrcamentoPrecoUnitario', valorVEda, 'moeda');
+            escreverValor('outOrcamentoPrecoUnitario', valorVenda, 'moeda'); // Correção de bug (era valorVEda)
             escreverValor('outOrcamentoSubtotal', subtotalOrcamento, 'moeda');
             escreverValor('outOrcamentoTotal', totalOrcamento, 'moeda');
 
