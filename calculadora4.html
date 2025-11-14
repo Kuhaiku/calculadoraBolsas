@@ -839,7 +839,8 @@
             // --- 7. ATUALIZAR ABA "Vendas" ---
             escreverValor('outMetaVenda', metaProducao, 'unidade');
             escreverValor('outCustoBolsaVenda', custoTotalPorBolsa, 'moeda');
-E            escreverValor('outLucroUnitario', lucroBrutoUnitario, 'moeda');
+            // LINHA 842 (CORRIGIDA - "E" REMOVIDO)
+            escreverValor('outLucroUnitario', lucroBrutoUnitario, 'moeda');
             escreverValor('outLucroTotal', lucroBrutoTotal, 'moeda');
 
             // --- 8. CALCULAR E ATUALIZAR ABA "Orçamento" ---
@@ -847,7 +848,7 @@ E            escreverValor('outLucroUnitario', lucroBrutoUnitario, 'moeda');
             const totalOrcamento = subtotalOrcamento + orcamentoFrete + orcamentoTaxaUrgencia;
             
             escreverValor('outOrcamentoQuantidade', metaProducao, 'unidade');
-            escreverValor('outOrcamentoPrecoUnitario', valorVenda, 'moeda');
+            escreverValor('outOrcamentoPrecoUnitario', valorVEda, 'moeda');
             escreverValor('outOrcamentoSubtotal', subtotalOrcamento, 'moeda');
             escreverValor('outOrcamentoTotal', totalOrcamento, 'moeda');
 
