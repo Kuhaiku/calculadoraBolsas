@@ -7,10 +7,12 @@ FROM nginx:alpine
 # para que ele seja a página padrão quando você acessar o servidor.
 COPY calculadora.html /usr/share/nginx/html/index.html
 COPY calculadora2.html /usr/share/nginx/html/calculadora2.html
+COPY calculadora3.html /usr/share/nginx/html/calculadora3.html
 
 # 3. Exponha a porta 80 (porta padrão do NGINX)
 # O EasyPanel vai detectar isso e direcionar o tráfego para ela.
 EXPOSE 80
 
 # O comando para iniciar o NGINX já está incluído na imagem base.
+
 
