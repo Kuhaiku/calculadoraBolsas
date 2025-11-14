@@ -69,7 +69,7 @@
             display: none;
         }
         
-        /* (NOVO) Estilos para Simulador de Corte Comparativo */
+        /* Estilos para Simulador de Corte Comparativo */
         .simulador-corte {
             display: grid;
             grid-template-columns: 1fr;
@@ -679,7 +679,7 @@
             });
         });
 
-        // --- (NOVO) LÓGICA DE OTIMIZAÇÃO DE CORTE ---
+        // --- LÓGICA DE OTIMIZAÇÃO DE CORTE ---
 
         /**
          * Calcula o custo para uma orientação específica.
@@ -741,7 +741,7 @@
         }
         
         /**
-         * (NOVO) Desenha uma opção de corte no SVG
+         * Desenha uma opção de corte no SVG
          */
         function desenharOpcaoDeCorte(svgId, labelId, opcao, larguraTecido) {
             const svg = document.getElementById(svgId);
@@ -786,11 +786,11 @@
 
 
         /**
-         * (NOVO) Atualiza a visualização comparativa
+         * (CORRIGIDO) Atualiza a visualização comparativa
          */
-        function atualizarVisualizacaoComparativa(prefixo, resultado, larguraTecido) {
-            const containerA = document.getElementById(`${prefixo}-a`);
-            const containerB = document.getElementById(`${prefixo}-b`);
+        function atualizarVisualizacaoComparativa(containerPrefix, svgPrefix, labelPrefix, resultado, larguraTecido) {
+            const containerA = document.getElementById(`${containerPrefix}-a`);
+            const containerB = document.getElementById(`${containerPrefix}-b`);
             
             if (!containerA || !containerB) return;
 
@@ -800,11 +800,11 @@
 
             // Configurar a Opção Otimizada (A)
             containerA.className = 'simulador-opcao melhor';
-            desenharOpcaoDeCorte(`svg-${prefixo}-a`, `label-${prefixo}-a`, melhor, larguraTecido);
+            desenharOpcaoDeCorte(`${svgPrefix}-a`, `${labelPrefix}-a`, melhor, larguraTecido); // <-- CORRIGIDO
 
             // Configurar a Opção Alternativa (B)
             containerB.className = 'simulador-opcao pior';
-            desenharOpcaoDeCorte(`svg-${prefixo}-b`, `label-${prefixo}-b`, pior, larguraTecido);
+            desenharOpcaoDeCorte(`${svgPrefix}-b`, `${labelPrefix}-b`, pior, larguraTecido); // <-- CORRIGIDO
         }
 
         // --- LÓGICA PRINCIPAL DE CÁLCULO ---
@@ -858,7 +858,7 @@
 
             const custoUnitarioAlca = (cmAlca / 100) * precoAlca;
             
-            // (NOVO) Cálculo Otimizado
+            // Cálculo Otimizado
             resultadoOtimizadoTNT = calcularAproveitamentoOtimizado(precoTNT, larguraTNT, alturaPecaTNT, larguraPecaTNT);
             const custoUnitarioTNT = resultadoOtimizadoTNT.melhor.custoUnitario;
             
@@ -897,9 +897,9 @@
             escreverValor('outCustoFixoRateado', custoUnitarioFixoRateado, 'moeda');
             escreverValor('outCustoTotal', custoTotalPorBolsa, 'moeda');
             
-            // (NOVO) Atualizar Visualizações Comparativas
-            atualizarVisualizacaoComparativa('simulador-tnt', resultadoOtimizadoTNT, larguraTNT);
-            atualizarVisualizacaoComparativa('simulador-algodao', resultadoOtimizadoAlgodao, larguraAlgodao);
+            // (CORRIGIDO) Atualizar Visualizações Comparativas
+            atualizarVisualizacaoComparativa('simulador-tnt', 'svg-tnt', 'label-tnt', resultadoOtimizadoTNT, larguraTNT);
+            atualizarVisualizacaoComparativa('simulador-algodao', 'svg-algodao', 'label-algodao', resultadoOtimizadoAlgodao, larguraAlgodao);
 
 
             // --- 4. CALCULAR LISTA DE COMPRAS (Aba "Produção") ---
@@ -943,8 +943,8 @@
             const totalOrcamento = subtotalOrcamento + orcamentoFrete + orcamentoTaxaUrgencia;
             
             escreverValor('outOrcamentoQuantidade', metaProducao, 'unidade');
-            escreverValor('outOrcamentoPrecoUnitario', valorVenda, 'moeda'); // Correção de bug (era valorVEda)
-            escreverValor('outOrcamentoSubtotal', subtotalOrcamento, 'moeda');
+            escreverValor('outOrcamentoPrecoUnitario', valorVenda, 'moeda');
+id="label-algodao-a"            escreverValor('outOrcamentoSubtotal', subtotalOrcamento, 'moeda');
             escreverValor('outOrcamentoTotal', totalOrcamento, 'moeda');
 
             // Resumo de Materiais no Orçamento
